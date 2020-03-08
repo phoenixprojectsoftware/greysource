@@ -20,8 +20,8 @@
 // CHud handles the message, calculation, and drawing the HUD
 //
 
-
-#define RGB_YELLOWISH 0x00FFA000 //255,160,0
+// define HUD colors. hex codes are different here, rather than starting with "#" they start with "0x00"
+#define RGB_YELLOWISH 0x000062ff //255,160,0
 #define RGB_REDISH 0x00FF1010 //255,160,0
 #define RGB_GREENISH 0x0000A000 //0,160,0
 

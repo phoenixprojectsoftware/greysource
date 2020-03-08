@@ -166,7 +166,7 @@ void CGauss::PrimaryAttack()
 	StartFire();
 	m_fInAttack = 0;
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0;
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.2;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.1;
 }
 
 void CGauss::SecondaryAttack()
