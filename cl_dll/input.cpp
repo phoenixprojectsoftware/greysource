@@ -65,7 +65,10 @@ cvar_t	*cl_pitchspeed;
 cvar_t	*cl_anglespeedkey;
 cvar_t	*cl_vsmoothing;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 7956df1... Slightly cleaner autojump implementation
 cvar_t* cl_autojump;
 
 extern "C" {
@@ -1032,7 +1035,10 @@ void InitInput (void)
 	cl_vsmoothing		= gEngfuncs.pfnRegisterVariable ( "cl_vsmoothing", "0.05", FCVAR_ARCHIVE );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 7956df1... Slightly cleaner autojump implementation
 	cl_autojump = gEngfuncs.pfnRegisterVariable("cl_autojump", "1", FCVAR_ARCHIVE);
 
 >>>>>>> parent of 4b37d59... Slightly cleaner autojump implementation
