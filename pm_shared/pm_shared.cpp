@@ -3337,13 +3337,13 @@ void PM_Move ( struct playermove_s *ppmove, int server )
 	}
 	
 #ifdef CLIENT_DLL
-	extern void update_player_info(int onground, int inwater, int walking);
+	extern int g_onground;
+	extern int g_inwater;
+	extern int g_walking;
 
-	update_player_info(
-		pmove->onground != -1,
-		pmove->waterlevel > 1,
-		pmove->movetype == MOVETYPE_WALK
-	);
+	g_onground = (pmove->onground != -1);
+	g_inwater = (pmove->waterlevel > 1);
+	g_walking = (pmove->movetype == MOVETYPE_WALK);
 #endif
 }
 
