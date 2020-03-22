@@ -64,6 +64,16 @@ cvar_t	*cl_yawspeed;
 cvar_t	*cl_pitchspeed;
 cvar_t	*cl_anglespeedkey;
 cvar_t	*cl_vsmoothing;
+<<<<<<< HEAD
+=======
+cvar_t* cl_autojump;
+
+extern "C" {
+	int g_onground = false;
+	int g_inwater = false;
+	int g_walking = true; // Movetype == MOVETYPE_WALK. Filters out noclip, being on ladder, etc.
+}
+>>>>>>> parent of 4b37d59... Slightly cleaner autojump implementation
 /*
 ===============================================================================
 
@@ -732,6 +742,33 @@ void DLLEXPORT CL_CreateMove ( float frametime, struct usercmd_s *cmd, int activ
 	// set button and flag bits
 	//
 	cmd->buttons = CL_ButtonBits( 1 );
+<<<<<<< HEAD
+=======
+	
+	{
+		static bool s_jump_was_down_last_frame = false;
+
+		if (cl_autojump->value != 0.0f)
+		{
+			bool should_release_jump = (!g_onground && !g_inwater && g_walking);
+
+			/*
+			 * Spam pressing and releasing jump if we're stuck in a spot where jumping still results in
+			 * being onground in the end of the frame. Without this check, +jump would remain held and
+			 * when the player exits this spot they would have to release and press the jump button to
+			 * start jumping again. This also helps with exiting water or ladder right onto the ground.
+			*/
+			if (s_jump_was_down_last_frame && g_onground && !g_inwater && g_walking)
+				should_release_jump = true;
+
+			if (should_release_jump)
+				cmd->buttons &= ~IN_JUMP;
+		}
+
+		s_jump_was_down_last_frame = ((cmd->buttons & IN_JUMP) != 0);
+	}
+
+>>>>>>> parent of 4b37d59... Slightly cleaner autojump implementation
 
 	// If they're in a modal dialog, ignore the attack button.
 	if(GetClientVoiceMgr()->IsInSquelchMode())
@@ -994,6 +1031,11 @@ void InitInput (void)
 
 	cl_vsmoothing		= gEngfuncs.pfnRegisterVariable ( "cl_vsmoothing", "0.05", FCVAR_ARCHIVE );
 
+<<<<<<< HEAD
+=======
+	cl_autojump = gEngfuncs.pfnRegisterVariable("cl_autojump", "1", FCVAR_ARCHIVE);
+
+>>>>>>> parent of 4b37d59... Slightly cleaner autojump implementation
 	m_pitch			    = gEngfuncs.pfnRegisterVariable ( "m_pitch","0.022", FCVAR_ARCHIVE );
 	m_yaw				= gEngfuncs.pfnRegisterVariable ( "m_yaw","0.022", FCVAR_ARCHIVE );
 	m_forward			= gEngfuncs.pfnRegisterVariable ( "m_forward","1", FCVAR_ARCHIVE );
