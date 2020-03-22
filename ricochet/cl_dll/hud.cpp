@@ -82,8 +82,6 @@ extern client_sprite_t *GetSpriteList(client_sprite_t *pList, const char *psz, i
 
 extern cvar_t *sensitivity;
 cvar_t *cl_lw = NULL;
-cvar_t* cl_viewrollangle;
-cvar_t* cl_viewrollspeed;
 
 void ShutdownInput (void);
 
@@ -229,8 +227,6 @@ void CHud :: Init( void )
 
 	CVAR_CREATE( "zoom_sensitivity_ratio", "1.2", 0 );
 	default_fov = CVAR_CREATE( "default_fov", "90", 0 );
-	cl_viewrollangle = CVAR_CREATE("cl_viewrollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
-	cl_viewrollspeed = CVAR_CREATE("cl_viewrollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 	m_pCvarStealMouse = CVAR_CREATE( "hud_capturemouse", "1", FCVAR_ARCHIVE );
 	cl_lw = gEngfuncs.pfnGetCvarPointer( "cl_lw" );
 
