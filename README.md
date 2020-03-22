@@ -1,4 +1,4 @@
-Half Life 1 SDK LICENSE.
+Half Life 1 SDK LICENSE
 ======================
 
 Half Life 1 SDK Copyright© Valve Corp.  
