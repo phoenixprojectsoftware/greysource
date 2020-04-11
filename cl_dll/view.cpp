@@ -90,6 +90,8 @@ cvar_t	*cl_bob;
 cvar_t	*cl_bobup;
 cvar_t	*cl_waterdist;
 cvar_t	*cl_chasedist;
+cvar_t* cl_bobtilt;
+cvar_t* cl_viewroll;
 
 // These cvars are not registered (so users can't cheat), so set the ->value field directly
 // Register these cvars in V_Init() if needed for easy tweaking
@@ -401,8 +403,8 @@ V_CalcViewRoll
 Roll is induced by movement and damage
 ==============
 */
-extern cvar_t* cl_viewrollangle;
-extern cvar_t* cl_viewrollspeed;
+extern cvar_t* cl_rollangle;
+extern cvar_t* cl_rollspeed;
 void V_CalcViewRoll ( struct ref_params_s *pparams )
 {
 	float		side;
@@ -411,7 +413,7 @@ void V_CalcViewRoll ( struct ref_params_s *pparams )
 	viewentity = gEngfuncs.GetEntityByIndex( pparams->viewentity );
 	if ( !viewentity )
 		return;
-	pparams->viewangles[ROLL] += V_CalcRoll(pparams->viewangles, pparams->simvel, cl_viewrollangle->value, cl_viewrollspeed->value) * 4;
+	if (cl_viewroll->value==1) pparams->viewangles[ROLL] += V_CalcRoll(pparams->viewangles, pparams->simvel, cl_rollangle->value, cl_rollspeed->value) * 4;
 
 	side = V_CalcRoll ( viewentity->angles, pparams->simvel, pparams->movevars->rollangle, pparams->movevars->rollspeed );
 
@@ -664,7 +666,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	view->angles[YAW]   -= bob * 0.5;
 	view->angles[ROLL]  -= bob * 1;
 	view->angles[PITCH] -= bob * 0.3;
-	VectorCopy(view->angles, view->curstate.angles);
+	if (cl_bobtilt->value==1) VectorCopy(view->angles, view->curstate.angles);
 
 	// pushing the view origin down off of the same X/Z plane as the ent's origin will give the
 	// gun a very nice 'shifting' effect when the player looks up/down. If there is a problem
@@ -1720,6 +1722,8 @@ void V_Init (void)
 	cl_bobup			= gEngfuncs.pfnRegisterVariable( "cl_bobup","0.5", 0 );
 	cl_waterdist		= gEngfuncs.pfnRegisterVariable( "cl_waterdist","4", 0 );
 	cl_chasedist		= gEngfuncs.pfnRegisterVariable( "cl_chasedist","112", 0 );
+	cl_bobtilt			= gEngfuncs.pfnRegisterVariable("cl_bobtilt", "112", 0);
+	cl_viewroll			= gEngfuncs.pfnRegisterVariable("cl_viewroll", "1", 0);
 }
 
 
