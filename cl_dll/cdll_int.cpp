@@ -24,7 +24,7 @@
 #undef INTERFACE_H
 #include "../public/interface.h"
 //#include "vgui_schememanager.h"
-#include "soundmanager.h"
+
 #include "pm_shared.h"
 
 #include <string.h>
@@ -264,7 +264,6 @@ void DLLEXPORT HUD_Frame( double time )
 	ServersThink( time );
 
 	GetClientVoiceMgr()->Frame(time);
-	SM_Think(time);
 }
 
 
