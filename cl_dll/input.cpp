@@ -23,7 +23,7 @@ extern "C"
 #include "Exports.h"
 
 #include "vgui_TeamFortressViewport.h"
-
+#include "soundmanager.h"
 
 extern int g_iAlive;
 
@@ -64,6 +64,9 @@ cvar_t* cl_yawspeed;
 cvar_t* cl_pitchspeed;
 cvar_t* cl_anglespeedkey;
 cvar_t* cl_vsmoothing;
+cvar_t* sm_current_pos;
+cvar_t* sm_current_file;
+cvar_t* sm_looping;
 /*
 ===============================================================================
 
@@ -978,6 +981,10 @@ void InitInput(void)
 	gEngfuncs.pfnAddCommand("-graph", IN_GraphUp);
 	gEngfuncs.pfnAddCommand("+break", IN_BreakDown);
 	gEngfuncs.pfnAddCommand("-break", IN_BreakUp);
+	gEngfuncs.pfnAddCommand("MP3Play", MP3Play);
+	gEngfuncs.pfnAddCommand("MP3Stop", MP3Stop);
+	gEngfuncs.pfnAddCommand("MP3Seek", MP3Seek);
+
 
 	lookstrafe = gEngfuncs.pfnRegisterVariable("lookstrafe", "0", FCVAR_ARCHIVE);
 	lookspring = gEngfuncs.pfnRegisterVariable("lookspring", "0", FCVAR_ARCHIVE);
@@ -991,6 +998,9 @@ void InitInput(void)
 	cl_movespeedkey = gEngfuncs.pfnRegisterVariable("cl_movespeedkey", "0.3", 0);
 	cl_pitchup = gEngfuncs.pfnRegisterVariable("cl_pitchup", "89", 0);
 	cl_pitchdown = gEngfuncs.pfnRegisterVariable("cl_pitchdown", "89", 0);
+	sm_current_pos = gEngfuncs.pfnRegisterVariable("sm_current_pos", "0", NULL);
+	sm_current_file = gEngfuncs.pfnRegisterVariable("sm_current_file", "0", NULL);
+	sm_looping = gEngfuncs.pfnRegisterVariable("sm_looping", "0", NULL);
 
 	cl_vsmoothing = gEngfuncs.pfnRegisterVariable("cl_vsmoothing", "0.05", FCVAR_ARCHIVE);
 
@@ -1007,6 +1017,8 @@ void InitInput(void)
 	KB_Init();
 	// Initialize view system
 	V_Init();
+
+	SM_Init();
 }
 
 /*
@@ -1038,4 +1050,37 @@ void DLLEXPORT HUD_Shutdown(void)
 #endif
 
 	CL_UnloadParticleMan();
+}
+
+void MP3Play()
+{
+	int argCount = gEngfuncs.Cmd_Argc();
+	if (argCount < 2) {
+		gEngfuncs.Con_Printf("MP3Play <filePath> : plays MP3 file using BASS audio library\n");
+		return;
+	}
+
+	SM_Play(gEngfuncs.Cmd_Argv(1));
+}
+
+void MP3Stop()
+{
+	SM_Stop();
+}
+
+void MP3Seek()
+{
+	int argCount = gEngfuncs.Cmd_Argc();
+	if (argCount < 2) {
+		gEngfuncs.Con_Printf("MP3Seek <seconds>\n");
+		return;
+	}
+
+	try {
+		double pos = std::stod(gEngfuncs.Cmd_Argv(1));
+		SM_Seek(pos);
+	}
+	catch (std::invalid_argument) {
+		gEngfuncs.Con_Printf("MP3Seek <seconds>\n");
+	}
 }

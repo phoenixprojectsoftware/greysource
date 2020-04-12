@@ -44,6 +44,7 @@ extern DLL_GLOBAL BOOL		g_fGameOver;
 extern DLL_GLOBAL	BOOL	g_fDrawLines;
 int gEvilImpulse101;
 extern DLL_GLOBAL int		g_iSkillLevel, gDisplayTitle;
+extern int g_changeLevelOccured;
 
 
 BOOL gInitHUD = TRUE;
@@ -113,10 +114,19 @@ TYPEDESCRIPTION	CBasePlayer::m_playerSaveData[] =
 	DEFINE_FIELD( CBasePlayer, m_fLongJump, FIELD_BOOLEAN ),
 	DEFINE_FIELD( CBasePlayer, m_fInitHUD, FIELD_BOOLEAN ),
 	DEFINE_FIELD( CBasePlayer, m_tbdPrev, FIELD_TIME ),
+	DEFINE_FIELD( CBasePlayer, noMapMusic, FIELD_BOOLEAN),
 
 	DEFINE_FIELD( CBasePlayer, m_pTank, FIELD_EHANDLE ),
 	DEFINE_FIELD( CBasePlayer, m_iHideHUD, FIELD_INTEGER ),
 	DEFINE_FIELD( CBasePlayer, m_iFOV, FIELD_INTEGER ),
+
+		DEFINE_FIELD(CBasePlayer, postSpawnDelay, FIELD_TIME),
+
+	DEFINE_FIELD(CBasePlayer, musicFile, FIELD_STRING),
+	DEFINE_FIELD(CBasePlayer, musicPos, FIELD_FLOAT),
+	DEFINE_FIELD(CBasePlayer, musicLooping, FIELD_BOOLEAN),
+	DEFINE_FIELD(CBasePlayer, musicGoingThroughChangeLevel, FIELD_BOOLEAN),
+	DEFINE_FIELD(CBasePlayer, currentMusicPlaylistIndex, FIELD_INTEGER),
 	
 	//DEFINE_FIELD( CBasePlayer, m_fDeadTime, FIELD_FLOAT ), // only used in multiplayer games
 	//DEFINE_FIELD( CBasePlayer, m_fGameHUDInitialized, FIELD_INTEGER ), // only used in multiplayer games
