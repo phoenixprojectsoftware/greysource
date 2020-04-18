@@ -471,70 +471,15 @@ void V_CalcIntermissionRefdef ( struct ref_params_s *pparams )
 	v_angles = pparams->viewangles;
 }
 
-#define ORIGIN_BACKUP 64
-#define ORIGIN_MASK ( ORIGIN_BACKUP - 1 )
-
-typedef struct 
-{
-	float Origins[ ORIGIN_BACKUP ][3];
-	float OriginTime[ ORIGIN_BACKUP ];
-
-	float Angles[ ORIGIN_BACKUP ][3];
-	float AngleTime[ ORIGIN_BACKUP ];
-
-	int CurrentOrigin;
-	int CurrentAngle;
-} viewinterp_t;
 
 /*
 ==================
-V_CalcRefdef
+V_WaterHackFixApply
 
 ==================
 */
-void V_CalcNormalRefdef ( struct ref_params_s *pparams )
+float V_CalcWaterOffsetHack ( struct ref_params_s* pparams )
 {
-	cl_entity_t		*ent, *view;
-	int				i;
-	vec3_t			angles;
-	float			bob, waterOffset;
-	static viewinterp_t		ViewInterp;
-
-	static float oldz = 0;
-	static float lasttime;
-
-	vec3_t camAngles, camForward, camRight, camUp;
-	cl_entity_t *pwater;
-
-	V_DriftPitch ( pparams );
-
-	if ( gEngfuncs.IsSpectateOnly() )
-	{
-		ent = gEngfuncs.GetEntityByIndex( g_iUser2 );
-	}
-	else
-	{
-		// ent is the player model ( visible when out of body )
-		ent = gEngfuncs.GetLocalPlayer();
-	}
-	
-	// view is the weapon model (only visible from inside body )
-	view = gEngfuncs.GetViewModel();
-
-	// transform the view offset by the model's matrix to get the offset from
-	// model origin for the view
-	bob = V_CalcBob ( pparams );
-
-	// refresh position
-	VectorCopy ( pparams->simorg, pparams->vieworg );
-	pparams->vieworg[2] += ( bob );
-	VectorAdd( pparams->vieworg, pparams->viewheight, pparams->vieworg );
-
-	VectorCopy ( pparams->cl_viewangles, pparams->viewangles );
-
-	gEngfuncs.V_CalcShake();
-	gEngfuncs.V_ApplyShake( pparams->vieworg, pparams->viewangles, 1.0 );
-
 	// never let view origin sit exactly on a node line, because a water plane can
 	// dissapear when viewed with the eye exactly on it.
 	// FIXME, we send origin at 1/128 now, change this?
@@ -547,7 +492,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	// Check for problems around water, move the viewer artificially if necessary 
 	// -- this prevents drawing errors in GL due to waves
 
-	waterOffset = 0;
+	float waterOffset = 0;
 	if ( pparams->waterlevel >= 2 )
 	{
 		int		i, contents, waterDist, waterEntity;
@@ -559,7 +504,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 			waterEntity = gEngfuncs.PM_WaterEntity( pparams->simorg );
 			if ( waterEntity >= 0 && waterEntity < pparams->max_entities )
 			{
-				pwater = gEngfuncs.GetEntityByIndex( waterEntity );
+				cl_entity_t *pwater = gEngfuncs.GetEntityByIndex( waterEntity );
 				if ( pwater && ( pwater->model != NULL ) )
 				{
 					waterDist += ( pwater->curstate.scale * 16 );	// Add in wave height
@@ -602,8 +547,76 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 		}
 	}
 
-	pparams->vieworg[2] += waterOffset;
+	return waterOffset;
+}
+
+
+#define ORIGIN_BACKUP 64
+#define ORIGIN_MASK ( ORIGIN_BACKUP - 1 )
+
+typedef struct 
+{
+	float Origins[ ORIGIN_BACKUP ][3];
+	float OriginTime[ ORIGIN_BACKUP ];
+
+	float Angles[ ORIGIN_BACKUP ][3];
+	float AngleTime[ ORIGIN_BACKUP ];
+
+	int CurrentOrigin;
+	int CurrentAngle;
+} viewinterp_t;
+
+/*
+==================
+V_CalcRefdef
+
+==================
+*/
+void V_CalcNormalRefdef ( struct ref_params_s *pparams )
+{
+	cl_entity_t		*ent, *view;
+	int				i;
+	vec3_t			angles;
+	float			bob;
+	static viewinterp_t		ViewInterp;
+
+	static float oldz = 0;
+	static float lasttime;
+
+	vec3_t camAngles, camForward, camRight, camUp;
+
+	V_DriftPitch ( pparams );
+
+	if ( gEngfuncs.IsSpectateOnly() )
+	{
+		ent = gEngfuncs.GetEntityByIndex( g_iUser2 );
+	}
+	else
+	{
+		// ent is the player model ( visible when out of body )
+		ent = gEngfuncs.GetLocalPlayer();
+	}
 	
+	// view is the weapon model (only visible from inside body )
+	view = gEngfuncs.GetViewModel();
+
+	// transform the view offset by the model's matrix to get the offset from
+	// model origin for the view
+	bob = V_CalcBob ( pparams );
+
+	// refresh position
+	VectorCopy ( pparams->simorg, pparams->vieworg );
+	pparams->vieworg[2] += ( bob );
+	VectorAdd( pparams->vieworg, pparams->viewheight, pparams->vieworg );
+
+	VectorCopy ( pparams->cl_viewangles, pparams->viewangles );
+
+	gEngfuncs.V_CalcShake();
+	gEngfuncs.V_ApplyShake( pparams->vieworg, pparams->viewangles, 1.0 );
+
+	float waterOffset = V_CalcWaterOffsetHack ( pparams );
+	pparams->vieworg[2] += waterOffset;
+
 	V_CalcViewRoll ( pparams );
 	
 	V_AddIdle ( pparams );
