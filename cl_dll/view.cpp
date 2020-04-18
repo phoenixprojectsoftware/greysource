@@ -566,6 +566,116 @@ typedef struct
 	int CurrentAngle;
 } viewinterp_t;
 
+
+/*
+==================
+V_ApplySmoothing
+
+==================
+*/
+void V_ApplySmoothing ( struct ref_params_s *pparams, cl_entity_t *view)
+{
+	static float oldz = 0;
+	static float lasttime;
+
+	static viewinterp_t		ViewInterp;
+
+	// smooth out stair step ups
+#if 1
+	if (!pparams->smoothing && pparams->onground && pparams->simorg[2] - oldz > 0)
+	{
+		float steptime;
+
+		steptime = pparams->time - lasttime;
+		if (steptime < 0)
+			//FIXME		I_Error ("steptime < 0");
+			steptime = 0;
+
+		oldz += steptime * 150;
+		if (oldz > pparams->simorg[2])
+			oldz = pparams->simorg[2];
+		if (pparams->simorg[2] - oldz > 18)
+			oldz = pparams->simorg[2] - 18;
+		pparams->vieworg[2] += oldz - pparams->simorg[2];
+		view->origin[2] += oldz - pparams->simorg[2];
+	}
+	else
+	{
+		oldz = pparams->simorg[2];
+	}
+#endif
+
+	{
+		static float lastorg[3];
+		vec3_t delta;
+
+		VectorSubtract( pparams->simorg, lastorg, delta );
+
+		if ( Length( delta ) != 0.0 )
+		{
+			VectorCopy( pparams->simorg, ViewInterp.Origins[ ViewInterp.CurrentOrigin & ORIGIN_MASK ] );
+			ViewInterp.OriginTime[ ViewInterp.CurrentOrigin & ORIGIN_MASK ] = pparams->time;
+			ViewInterp.CurrentOrigin++;
+
+			VectorCopy( pparams->simorg, lastorg );
+		}
+	}
+
+	// Smooth out whole view in multiplayer when on trains, lifts
+	if ( cl_vsmoothing && cl_vsmoothing->value &&
+		( pparams->smoothing && ( pparams->maxclients > 1 ) ) )
+	{
+		int foundidx;
+		int i;
+		float t;
+
+		if ( cl_vsmoothing->value < 0.0 )
+		{
+			gEngfuncs.Cvar_SetValue( "cl_vsmoothing", 0.0 );
+		}
+
+		t = pparams->time - cl_vsmoothing->value;
+
+		for ( i = 1; i < ORIGIN_MASK; i++ )
+		{
+			foundidx = ViewInterp.CurrentOrigin - 1 - i;
+			if ( ViewInterp.OriginTime[ foundidx & ORIGIN_MASK ] <= t )
+				break;
+		}
+
+		if ( i < ORIGIN_MASK &&  ViewInterp.OriginTime[ foundidx & ORIGIN_MASK ] != 0.0 )
+		{
+			// Interpolate
+			vec3_t delta;
+			double frac;
+			double dt;
+			vec3_t neworg;
+
+			dt = ViewInterp.OriginTime[ (foundidx + 1) & ORIGIN_MASK ] - ViewInterp.OriginTime[ foundidx & ORIGIN_MASK ];
+			if ( dt > 0.0 )
+			{
+				frac = ( t - ViewInterp.OriginTime[ foundidx & ORIGIN_MASK] ) / dt;
+				frac = V_min( 1.0, frac );
+				VectorSubtract( ViewInterp.Origins[ ( foundidx + 1 ) & ORIGIN_MASK ], ViewInterp.Origins[ foundidx & ORIGIN_MASK ], delta );
+				VectorMA( ViewInterp.Origins[ foundidx & ORIGIN_MASK ], frac, delta, neworg );
+
+				// Dont interpolate large changes
+				if ( Length( delta ) < 64 )
+				{
+					VectorSubtract( neworg, pparams->simorg, delta );
+
+					VectorAdd( pparams->simorg, delta, pparams->simorg );
+					VectorAdd( pparams->vieworg, delta, pparams->vieworg );
+					VectorAdd( view->origin, delta, view->origin );
+				}
+			}
+		}
+	}
+
+	lasttime = pparams->time;
+}
+
+
 /*
 ==================
 V_CalcRefdef
@@ -576,12 +686,8 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 {
 	cl_entity_t		*ent, *view;
 	int				i;
-	vec3_t			angles;
 	float			bob;
-	static viewinterp_t		ViewInterp;
 
-	static float oldz = 0;
-	static float lasttime;
 
 	vec3_t camAngles, camForward, camRight, camUp;
 
@@ -622,7 +728,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	V_AddIdle ( pparams );
 
 	// offsets
-	VectorCopy( pparams->cl_viewangles, angles );
+	vec3_t angles = pparams->cl_viewangles;
 
 	AngleVectors ( angles, pparams->forward, pparams->right, pparams->up );
 
@@ -713,98 +819,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 
 	V_DropPunchAngle ( pparams->frametime, (float *)&ev_punchangle );
 
-	// smooth out stair step ups
-#if 1
-	if ( !pparams->smoothing && pparams->onground && pparams->simorg[2] - oldz > 0)
-	{
-		float steptime;
-		
-		steptime = pparams->time - lasttime;
-		if (steptime < 0)
-	//FIXME		I_Error ("steptime < 0");
-			steptime = 0;
-
-		oldz += steptime * 150;
-		if (oldz > pparams->simorg[2])
-			oldz = pparams->simorg[2];
-		if (pparams->simorg[2] - oldz > 18)
-			oldz = pparams->simorg[2]- 18;
-		pparams->vieworg[2] += oldz - pparams->simorg[2];
-		view->origin[2] += oldz - pparams->simorg[2];
-	}
-	else
-	{
-		oldz = pparams->simorg[2];
-	}
-#endif
-
-	{
-		static float lastorg[3];
-		vec3_t delta;
-
-		VectorSubtract( pparams->simorg, lastorg, delta );
-
-		if ( Length( delta ) != 0.0 )
-		{
-			VectorCopy( pparams->simorg, ViewInterp.Origins[ ViewInterp.CurrentOrigin & ORIGIN_MASK ] );
-			ViewInterp.OriginTime[ ViewInterp.CurrentOrigin & ORIGIN_MASK ] = pparams->time;
-			ViewInterp.CurrentOrigin++;
-
-			VectorCopy( pparams->simorg, lastorg );
-		}
-	}
-
-	// Smooth out whole view in multiplayer when on trains, lifts
-	if ( cl_vsmoothing && cl_vsmoothing->value &&
-		( pparams->smoothing && ( pparams->maxclients > 1 ) ) )
-	{
-		int foundidx;
-		int i;
-		float t;
-
-		if ( cl_vsmoothing->value < 0.0 )
-		{
-			gEngfuncs.Cvar_SetValue( "cl_vsmoothing", 0.0 );
-		}
-
-		t = pparams->time - cl_vsmoothing->value;
-
-		for ( i = 1; i < ORIGIN_MASK; i++ )
-		{
-			foundidx = ViewInterp.CurrentOrigin - 1 - i;
-			if ( ViewInterp.OriginTime[ foundidx & ORIGIN_MASK ] <= t )
-				break;
-		}
-
-		if ( i < ORIGIN_MASK &&  ViewInterp.OriginTime[ foundidx & ORIGIN_MASK ] != 0.0 )
-		{
-			// Interpolate
-			vec3_t delta;
-			double frac;
-			double dt;
-			vec3_t neworg;
-
-			dt = ViewInterp.OriginTime[ (foundidx + 1) & ORIGIN_MASK ] - ViewInterp.OriginTime[ foundidx & ORIGIN_MASK ];
-			if ( dt > 0.0 )
-			{
-				frac = ( t - ViewInterp.OriginTime[ foundidx & ORIGIN_MASK] ) / dt;
-				frac = V_min( 1.0, frac );
-				VectorSubtract( ViewInterp.Origins[ ( foundidx + 1 ) & ORIGIN_MASK ], ViewInterp.Origins[ foundidx & ORIGIN_MASK ], delta );
-				VectorMA( ViewInterp.Origins[ foundidx & ORIGIN_MASK ], frac, delta, neworg );
-
-				// Dont interpolate large changes
-				if ( Length( delta ) < 64 )
-				{
-					VectorSubtract( neworg, pparams->simorg, delta );
-
-					VectorAdd( pparams->simorg, delta, pparams->simorg );
-					VectorAdd( pparams->vieworg, delta, pparams->vieworg );
-					VectorAdd( view->origin, delta, view->origin );
-
-				}
-			}
-		}
-	}
+	V_ApplySmoothing ( pparams, view );
 
 	// Store off v_angles before munging for third person
 	v_angles = pparams->viewangles;
@@ -845,8 +860,6 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 			v_angles = pparams->viewangles;
 		}
 	}
-
-	lasttime = pparams->time;
 
 	v_origin = pparams->vieworg;
 }
