@@ -249,7 +249,7 @@ BobValues V_CalculateBob ( vec3_t velocity, float currentTime )
 	return bob;
 }
 
-void V_ApplyBob(struct ref_params_s* pparams)
+void V_ApplyBob(struct ref_params_s* pparams, cl_entity_t *view)
 {
 	if (!pparams->time)
 		return;
@@ -257,18 +257,18 @@ void V_ApplyBob(struct ref_params_s* pparams)
 	auto bob = V_CalculateBob(pparams->simvel, pparams->time);
 
 	// Apply bob, but scaled down to 40%
-	VectorMA(pparams->vieworg, bob.verticalBob * 0.1f, pparams->forward, pparams->vieworg);
+	VectorMA(view->origin, bob.verticalBob * 0.1f, pparams->forward, view->origin);
 
 	// Z bob a bit more
-	pparams->vieworg[2] += bob.verticalBob * 0.1f;
+	view->origin[2] += bob.verticalBob * 0.1f;
 
 	// bob the angles
-	pparams->viewangles[ROLL] += bob.verticalBob * 0.5f;
-	pparams->viewangles[PITCH] -= bob.verticalBob * 0.4f;
+	view->angles[ROLL] += bob.verticalBob * 0.5f;
+	view->angles[PITCH] -= bob.verticalBob * 0.4f;
 
-	pparams->viewangles[YAW] -= bob.laterialBob *0.3f;
+	view->angles[YAW] -= bob.laterialBob *0.3f;
 
-	VectorMA(pparams->vieworg, bob.laterialBob * 0.8f, pparams->right, pparams->vieworg);
+	VectorMA(view->origin, bob.laterialBob * 0.8f, pparams->right, view->origin);
 }
 
 /*
@@ -834,7 +834,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	// Let the viewmodel shake at about 10% of the amplitude
 	gEngfuncs.V_ApplyShake( view->origin, view->angles, 0.9 );
 
-	V_ApplyBob( pparams );
+	V_ApplyBob( pparams, view );
 
 	// pushing the view origin down off of the same X/Z plane as the ent's origin will give the
 	// gun a very nice 'shifting' effect when the player looks up/down. If there is a problem
