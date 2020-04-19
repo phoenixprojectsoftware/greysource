@@ -21,7 +21,7 @@
 //
 
 // define HUD colors. hex codes are different here, rather than starting with "#" they start with "0x00"
-#define RGB_DEFAULT 0x003692f8 //54, 146, 248
+#define RGB_DEFAULT 0x005F5FFF //95,95,255
 #define RGB_GREY 0x008e8f91 //255,160,0
 #define RGB_GREENISH 0x0000A000 //0,160,0
 
