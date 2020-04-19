@@ -33,6 +33,4 @@ char PM_FindTextureType( char *name );
 #define OBS_MAP_FREE			5
 #define OBS_MAP_CHASE			6
 
-#define CBaseViewModel C_BaseViewModel
-class QAngle;
 #endif
