@@ -1009,8 +1009,8 @@ void CBaseTrigger :: HurtTouch ( CBaseEntity *pOther )
 	// Store pain time so we can get all of the other entities on this frame
 	pev->pain_finished = gpGlobals->time;
 
-	// Apply damage every second
-	pev->dmgtime = gpGlobals->time + 1.0;// one second delay until this trigger can hurt toucher again
+	// Apply damage every half second
+	pev->dmgtime = gpGlobals->time + 0.5;// half second delay until this trigger can hurt toucher again
 
   
 	
