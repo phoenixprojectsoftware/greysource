@@ -146,6 +146,7 @@
     <ClCompile Include="..\..\dlls\hornet.cpp" />
     <ClCompile Include="..\..\dlls\hornetgun.cpp" />
     <ClCompile Include="..\..\dlls\houndeye.cpp" />
+    <ClCompile Include="..\..\dlls\hurtremote.cpp" />
     <ClCompile Include="..\..\dlls\h_ai.cpp" />
     <ClCompile Include="..\..\dlls\h_battery.cpp" />
     <ClCompile Include="..\..\dlls\h_cine.cpp" />
