@@ -1027,7 +1027,7 @@ void CApacheHVR :: IgniteThink( void  )
 void CApacheHVR :: AccelerateThink( void  )
 {
 	// check world boundaries
-	if (pev->origin.x < -4096 || pev->origin.x > 4096 || pev->origin.y < -4096 || pev->origin.y > 4096 || pev->origin.z < -4096 || pev->origin.z > 4096)
+	if (pev->origin.x < -16384 || pev->origin.x > 16384 || pev->origin.y < -16384 || pev->origin.y > 16384 || pev->origin.z < -16384 || pev->origin.z > 16384)
 	{
 		UTIL_Remove( this );
 		return;
