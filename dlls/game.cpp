@@ -24,20 +24,21 @@ cvar_t	fragsleft	= {"mp_fragsleft","0", FCVAR_SERVER | FCVAR_UNLOGGED };	  // Do
 cvar_t	timeleft	= {"mp_timeleft","0" , FCVAR_SERVER | FCVAR_UNLOGGED };	  // "      "
 
 // multiplayer server rules
-cvar_t	teamplay	= {"mp_teamplay","0", FCVAR_SERVER };
-cvar_t	fraglimit	= {"mp_fraglimit","0", FCVAR_SERVER };
-cvar_t	timelimit	= {"mp_timelimit","0", FCVAR_SERVER };
-cvar_t	friendlyfire= {"mp_friendlyfire","0", FCVAR_SERVER };
-cvar_t	falldamage	= {"mp_falldamage","0", FCVAR_SERVER };
-cvar_t	weaponstay	= {"mp_weaponstay","0", FCVAR_SERVER };
-cvar_t	forcerespawn= {"mp_forcerespawn","1", FCVAR_SERVER };
-cvar_t	flashlight	= {"mp_flashlight","0", FCVAR_SERVER };
-cvar_t	aimcrosshair= {"mp_autocrosshair","1", FCVAR_SERVER };
-cvar_t	decalfrequency = {"decalfrequency","30", FCVAR_SERVER };
-cvar_t	teamlist = {"mp_teamlist","hgrunt;scientist", FCVAR_SERVER };
-cvar_t	teamoverride = {"mp_teamoverride","1" };
-cvar_t	defaultteam = {"mp_defaultteam","0" };
-cvar_t	allowmonsters={"mp_allowmonsters","0", FCVAR_SERVER };
+cvar_t	teamplay	= { "mp_teamplay","0", FCVAR_SERVER };
+cvar_t	fraglimit	= { "mp_fraglimit","0", FCVAR_SERVER };
+cvar_t	timelimit	= { "mp_timelimit","0", FCVAR_SERVER };
+cvar_t	friendlyfire= { "mp_friendlyfire","0", FCVAR_SERVER };
+cvar_t	falldamage	= { "mp_falldamage","0", FCVAR_SERVER };
+cvar_t	weaponstay	= { "mp_weaponstay","0", FCVAR_SERVER };
+cvar_t	forcerespawn= { "mp_forcerespawn","1", FCVAR_SERVER };
+cvar_t	flashlight	= { "mp_flashlight","0", FCVAR_SERVER };
+cvar_t	aimcrosshair= { "mp_autocrosshair","1", FCVAR_SERVER };
+cvar_t	decalfrequency = { "decalfrequency","30", FCVAR_SERVER };
+cvar_t	teamlist = { "mp_teamlist","hgrunt;scientist", FCVAR_SERVER };
+cvar_t	teamoverride = { "mp_teamoverride","1" };
+cvar_t	defaultteam = { "mp_defaultteam","0" };
+cvar_t	allowmonsters={ "mp_allowmonsters","0", FCVAR_SERVER };
+cvar_t  mp5_old_rate = { "sv_mp5_old_rate", "1", FCVAR_SERVER };
 
 cvar_t  allow_spectators = { "allow_spectators", "0.0", FCVAR_SERVER };		// 0 prevents players from being spectators
 

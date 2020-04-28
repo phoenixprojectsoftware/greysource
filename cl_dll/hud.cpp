@@ -83,8 +83,8 @@ extern client_sprite_t *GetSpriteList(client_sprite_t *pList, const char *psz, i
 
 extern cvar_t *sensitivity;
 cvar_t *cl_lw = NULL;
-cvar_t* cl_viewrollangle;
-cvar_t* cl_viewrollspeed;
+cvar_t* cl_rollangle;
+cvar_t* cl_rollspeed;
 
 void ShutdownInput (void);
 
@@ -321,10 +321,11 @@ void CHud :: Init( void )
 	// VGUI Menus
 	HOOK_MESSAGE( VGUIMenu );
 
+	cl_rollangle = CVAR_CREATE("cl_rollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+	cl_rollspeed = CVAR_CREATE("cl_rollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+
 	CVAR_CREATE( "hud_classautokill", "1", FCVAR_ARCHIVE | FCVAR_USERINFO );		// controls whether or not to suicide immediately on TF class switch
 	CVAR_CREATE( "hud_takesshots", "0", FCVAR_ARCHIVE );		// controls whether or not to automatically take screenshots at the end of a round
-	cl_viewrollangle = CVAR_CREATE("cl_viewrollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
-	cl_viewrollspeed = CVAR_CREATE("cl_viewrollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 
 
 	m_iLogo = 0;
