@@ -30,6 +30,7 @@
 #include "demo.h"
 #include "demo_api.h"
 #include "vgui_ScorePanel.h"
+#include "GreySourceVersionInfo.h"
 
 hud_player_info_t	 g_PlayerInfoList[MAX_PLAYERS+1];	   // player info from the engine
 extra_player_info_t  g_PlayerExtraInfo[MAX_PLAYERS+1];   // additional player info sent directly to the client dll
@@ -282,6 +283,16 @@ int __MsgFunc_AllowSpec(const char *pszName, int iSize, void *pbuf)
 	return 0;
 }
 
+void PrintVersion()
+{
+	gEngfuncs.Con_Printf("\n");
+	gEngfuncs.Con_Printf("\n 'Half-Life: Zombies Ate My Neighbours' is running ", build, " built on ", buildDate, "\n");
+	gEngfuncs.Con_Printf("\n Type of build: ", buildType);
+	gEngfuncs.Con_Printf("\n ", buildAuthor);
+	gEngfuncs.Con_Printf("\n The game SDK can be found at ", gameSdk);
+	gEngfuncs.Con_Printf("\n The engine SDK can be found at ", engineSdk);
+}
+
 // This is called every time the DLL is loaded
 void CHud :: Init( void )
 {
@@ -336,6 +347,8 @@ void CHud :: Init( void )
 	m_pCvarStealMouse = CVAR_CREATE( "hud_capturemouse", "1", FCVAR_ARCHIVE );
 	m_pCvarDraw = CVAR_CREATE( "hud_draw", "1", FCVAR_ARCHIVE );
 	cl_lw = gEngfuncs.pfnGetCvarPointer( "cl_lw" );
+
+	gEngfuncs.pfnAddCommand("version_greysource", PrintVersion);
 
 	m_pSpriteList = NULL;
 
