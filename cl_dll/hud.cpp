@@ -286,11 +286,11 @@ int __MsgFunc_AllowSpec(const char *pszName, int iSize, void *pbuf)
 void PrintVersion()
 {
 	gEngfuncs.Con_Printf("\n");
-	gEngfuncs.Con_Printf("\n 'Half-Life: Zombies Ate My Neighbours' is running ", build, " built on ", buildDate, "\n");
-	gEngfuncs.Con_Printf("\n Type of build: ", buildType);
-	gEngfuncs.Con_Printf("\n ", buildAuthor);
-	gEngfuncs.Con_Printf("\n The game SDK can be found at ", gameSdk);
-	gEngfuncs.Con_Printf("\n The engine SDK can be found at ", engineSdk);
+	gEngfuncs.Con_Printf("\n 'Half-Life: Zombies Ate My Neighbours' is running %s built on %s\n", build, buildDate);
+	gEngfuncs.Con_Printf("\n Type of build: %s", buildType);
+	gEngfuncs.Con_Printf("\n %s", buildAuthor);
+	gEngfuncs.Con_Printf("\n The game SDK can be found at %s", gameSdk);
+	gEngfuncs.Con_Printf("\n The engine SDK can be found at %s", engineSdk);
 }
 
 // This is called every time the DLL is loaded
