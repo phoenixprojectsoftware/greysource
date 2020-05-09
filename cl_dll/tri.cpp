@@ -20,6 +20,7 @@
 
 #include "particleman.h"
 #include "tri.h"
+#include "fog.h"
 extern IParticleMan *g_pParticleMan;
 
 /*
@@ -34,6 +35,7 @@ void DLLEXPORT HUD_DrawNormalTriangles( void )
 //	RecClDrawNormalTriangles();
 
 	gHUD.m_Spectator.DrawOverview();
+	gFog.HUD_DrawNormalTriangles();
 }
 
 #if defined( _TFC )
@@ -54,7 +56,7 @@ void DLLEXPORT HUD_DrawTransparentTriangles( void )
 #if defined( _TFC )
 	RunEventList();
 #endif
-
+	gFog.HUD_DrawTransparentTriangles();
 	if ( g_pParticleMan )
 		 g_pParticleMan->Update();
 }

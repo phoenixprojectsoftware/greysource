@@ -20,6 +20,7 @@
 #include "shake.h"
 #include "hltv.h"
 #include "Exports.h"
+#include "fog.h"
 
 
 #ifndef M_PI
@@ -1762,6 +1763,7 @@ void V_DropPunchAngle ( float frametime, float *ev_punchangle )
 	len -= (10.0 + len * 0.5) * frametime;
 	len = V_max( len, 0.0 );
 	VectorScale ( ev_punchangle, len, ev_punchangle );
+	gFog.V_CalcRefDef(pparams);
 }
 
 /*

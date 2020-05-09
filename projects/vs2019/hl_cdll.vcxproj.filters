@@ -306,6 +306,9 @@
     <ClCompile Include="..\..\pm_shared\pm_shared.cpp">
       <Filter>Source Files\pm_shared</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\cl_dll\fog.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\cl_dll\kbutton.h">
@@ -433,6 +436,9 @@
     </ClInclude>
     <ClInclude Include="..\..\game_shared\GreySourceVersionInfo.h">
       <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cl_dll\fog.h">
+      <Filter>Header Files\cl_dll</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

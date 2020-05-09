@@ -39,6 +39,7 @@
 #include "usercmd.h"
 #include "netadr.h"
 #include "pm_shared.h"
+#include "effects.h"
 
 #if !defined ( _WIN32 )
 #include <ctype.h>
@@ -731,6 +732,9 @@ void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 
 	// Link user messages here to make sure first client can get them...
 	LinkUserMessages();
+
+	// Reset fog when reloading
+	CEnvFog::SetCurrentEndDist(0, 0);
 }
 
 
@@ -796,6 +800,7 @@ void StartFrame( void )
 
 	gpGlobals->teamplay = teamplay.value;
 	g_ulFrameCount++;
+	CEnvFog::FogThink();
 }
 
 
@@ -1121,6 +1126,10 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 		}
 	}
 
+	if (CEnvFog::CheckBBox(host, ent))
+	{
+		return 0;
+	}
 
 	// Don't send entity to local client if the client says it's predicting the entity itself.
 	if ( ent->v.flags & FL_SKIPLOCALHOST )

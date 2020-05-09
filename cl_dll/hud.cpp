@@ -31,6 +31,7 @@
 #include "demo_api.h"
 #include "vgui_ScorePanel.h"
 #include "GreySourceVersionInfo.h"
+#include "fog.h"
 
 hud_player_info_t	 g_PlayerInfoList[MAX_PLAYERS+1];	   // player info from the engine
 extra_player_info_t  g_PlayerExtraInfo[MAX_PLAYERS+1];   // additional player info sent directly to the client dll
@@ -389,6 +390,8 @@ void CHud :: Init( void )
 	ServersInit();
 
 	MsgFunc_ResetHUD(0, 0, NULL );
+
+	gFog.Init();
 }
 
 // CHud destructor
@@ -532,6 +535,7 @@ void CHud :: VidInit( void )
 	m_TextMessage.VidInit();
 	m_StatusIcons.VidInit();
 	GetClientVoiceMgr()->VidInit();
+	gFog.VidInit();
 }
 
 int CHud::MsgFunc_Logo(const char *pszName,  int iSize, void *pbuf)

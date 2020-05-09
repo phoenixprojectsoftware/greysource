@@ -188,7 +188,7 @@ int gmsgTeamNames = 0;
 int gmsgStatusText = 0;
 int gmsgStatusValue = 0; 
 
-
+int gmsgFog = 0;
 
 void LinkUserMessages( void )
 {
@@ -207,6 +207,7 @@ void LinkUserMessages( void )
 	gmsgDamage = REG_USER_MSG( "Damage", 12 );
 	gmsgBattery = REG_USER_MSG( "Battery", 2);
 	gmsgTrain = REG_USER_MSG( "Train", 1);
+	gmsgFog = REG_USER_MSG("Fog", 9);
 	//gmsgHudText = REG_USER_MSG( "HudTextPro", -1 );
 	gmsgHudText = REG_USER_MSG( "HudText", -1 ); // we don't use the message but 3rd party addons may!
 	gmsgSayText = REG_USER_MSG( "SayText", -1 );
@@ -2982,6 +2983,14 @@ void CBasePlayer :: Precache( void )
 
 	if ( gInitHUD )
 		m_fInitHUD = TRUE;
+	m_bSendMessages = TRUE; 
+
+		// This will inform the player code, so that whenever a player spawns, it will send through the init messages for all the entities.Following this, go to the CBasePlayer::UpdateClientData function, and at the top, add the following piece of code :
+	    if (m_bSendMessages)
+	{
+		InitializeEntities();
+		m_bSendMessages = FALSE;
+	}
 }
 
 
@@ -4180,6 +4189,27 @@ void CBasePlayer :: UpdateClientData( void )
 	}
 }
 
+
+//=========================================================
+// InitializeEntities
+//=========================================================
+void CBasePlayer::InitializeEntities(void)
+{
+	edict_t* pEdict = g_engfuncs.pfnPEntityOfEntIndex(1);
+	CBaseEntity* pEntity;
+
+	for (int i = 0; i < gpGlobals->maxEntities; i++, pEdict++)
+	{
+		if (pEdict->free)
+			continue;
+
+		pEntity = CBaseEntity::Instance(pEdict);
+		if (!pEntity)
+			break;
+
+		pEntity->SendInitMessages(this);
+	}
+}
 
 //=========================================================
 // FBecomeProne - Overridden for the player to set the proper
