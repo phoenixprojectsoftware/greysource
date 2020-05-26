@@ -13,7 +13,10 @@
 *
 ****/
 
+
+#include "winsani_in.h"
 #include "windows.h"
+#include "winsani_out.h"
 #include "hud.h"
 #include "cl_util.h"
 #include "parsemsg.h"
@@ -30,7 +33,9 @@
 #include "pm_defs.h"
 #include "fog.h"
 
+
 #include "gl/gl.h"
+#include "winsani_out.h"
 
 #include "const.h"
 #include "entity_state.h"
