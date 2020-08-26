@@ -81,7 +81,7 @@ void CPython::Spawn( )
 
 void CPython::Precache( void )
 {
-	PRECACHE_MODEL("models/v_357.mdl");
+	PRECACHE_MODEL("models/v_player1mac10.mdl");
 	PRECACHE_MODEL("models/w_357.mdl");
 	PRECACHE_MODEL("models/p_357.mdl");
 
@@ -112,7 +112,7 @@ BOOL CPython::Deploy( )
 		pev->body = 0;
 	}
 
-	return DefaultDeploy( "models/v_357.mdl", "models/p_357.mdl", PYTHON_DRAW, "python", UseDecrement(), pev->body );
+	return DefaultDeploy( "models/v_player1mac10.mdl", "models/p_357.mdl", PYTHON_DRAW, "python", UseDecrement(), pev->body );
 }
 
 
@@ -125,7 +125,7 @@ void CPython::Holster( int skiplocal /* = 0 */ )
 		SecondaryAttack();
 	}
 
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.098;
 	m_flTimeWeaponIdle = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 	SendWeaponAnim( PYTHON_HOLSTER );
 }
@@ -210,7 +210,7 @@ void CPython::PrimaryAttack()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 
-	m_flNextPrimaryAttack = 0.75;
+	m_flNextPrimaryAttack = 0.069;
 	m_flTimeWeaponIdle = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 }
 
