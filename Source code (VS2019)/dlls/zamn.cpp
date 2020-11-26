@@ -55,7 +55,7 @@ public:
 	int TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, int bitsDamageType );
 };
 
-LINK_ENTITY_TO_CLASS( monster_zamn, CZamnZombie );
+LINK_ENTITY_TO_CLASS( monster_zamnhl, CZamnZombie );
 
 const char *CZamnZombie::pAttackHitSounds[] = 
 {
