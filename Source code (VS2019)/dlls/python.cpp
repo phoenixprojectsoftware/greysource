@@ -24,14 +24,14 @@
 
 
 enum python_e {
-	PYTHON_IDLE1 = 0,
-	PYTHON_FIDGET,
-	PYTHON_FIRE1,
-	PYTHON_RELOAD,
-	PYTHON_HOLSTER,
-	PYTHON_DRAW,
-	PYTHON_IDLE2,
-	PYTHON_IDLE3
+	PYTHON_IDLE1 = 0, // 1. longidle
+	PYTHON_FIDGET, // 2. idle1
+	PYTHON_GRENADE, // 3. grenade (OG PYTHON_FIRE)
+	PYTHON_RELOAD, // 4. reload
+	PYTHON_DEPLOY, // 5. deploy (OG PYTHON_HOLSTER)
+	PYTHON_FIRE, // 6. shoot_1
+	PYTHON_IDLE2, //  7. shoot_2
+	PYTHON_IDLE3 // 8. shoot_3
 };
 
 LINK_ENTITY_TO_CLASS( weapon_python, CPython );
@@ -112,7 +112,7 @@ BOOL CPython::Deploy( )
 		pev->body = 0;
 	}
 
-	return DefaultDeploy( "models/v_player1mac10.mdl", "models/p_357.mdl", PYTHON_DRAW, "python", UseDecrement(), pev->body );
+	return DefaultDeploy( "models/v_player1mac10.mdl", "models/p_357.mdl", PYTHON_DEPLOY, "python", UseDecrement(), pev->body );
 }
 
 
@@ -127,7 +127,7 @@ void CPython::Holster( int skiplocal /* = 0 */ )
 
 	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.098;
 	m_flTimeWeaponIdle = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
-	SendWeaponAnim( PYTHON_HOLSTER );
+	SendWeaponAnim( PYTHON_DEPLOY );
 }
 
 void CPython::SecondaryAttack( void )
@@ -250,17 +250,17 @@ void CPython::WeaponIdle( void )
 	float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0, 1 );
 	if (flRand <= 0.5)
 	{
-		iAnim = PYTHON_IDLE1;
+		iAnim = PYTHON_FIDGET;
 		m_flTimeWeaponIdle = (70.0/30.0);
 	}
 	else if (flRand <= 0.7)
 	{
-		iAnim = PYTHON_IDLE2;
+		iAnim = PYTHON_IDLE1;
 		m_flTimeWeaponIdle = (60.0/30.0);
 	}
 	else if (flRand <= 0.9)
 	{
-		iAnim = PYTHON_IDLE3;
+		iAnim = PYTHON_IDLE1;
 		m_flTimeWeaponIdle = (88.0/30.0);
 	}
 	else
